@@ -8,9 +8,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
 
 @RestController
 public class Rest {
@@ -46,28 +44,15 @@ public class Rest {
             response = restTemplate.postForEntity( dataPath, request , String.class );
 
             if(response.getBody() == null){
-                throw new NotFound();
+                throw new NotFoundException();
             }
 
             return String.valueOf(response.getBody());
         }catch (ResourceAccessException e){
-            throw new ServiceUnavailable();
+            throw new ServiceUnavailableException();
         }catch (HttpClientErrorException.Forbidden e){
-            throw new InternalServerError();
+            throw new InternalServerErrException();
         }
-    }
-
-    public static String[] getCredentials(String authorization){
-        if (authorization != null && authorization.toLowerCase().startsWith("basic")) {
-            // Authorization: Basic base64credentials
-            String base64Credentials = authorization.substring("Basic".length()).trim();
-            byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
-            String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-            // credentials = username:password
-            return credentials.split(":", 2);
-        }
-
-        return null;
     }
 
     public static HttpHeaders fillHeaders(String login, String password){

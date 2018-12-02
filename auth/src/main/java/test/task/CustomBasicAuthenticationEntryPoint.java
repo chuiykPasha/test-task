@@ -16,11 +16,11 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
         //Authentication failed, send error response.
         System.out.println("ENTRY POINT AUTH");
         System.out.println(request.getHeader("Authorization"));
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
 
         PrintWriter writer = response.getWriter();
-        writer.println("HTTP Status 401 : " + authException.getMessage());
+        writer.println("HTTP Status 403 : " + authException.getMessage());
     }
 
     @Override

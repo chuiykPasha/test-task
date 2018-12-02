@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import test.task.entities.User;
 import test.task.entities.UserCourses;
+import test.task.excpetion.NotFoundException;
 import test.task.repositories.UserRepository;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +36,6 @@ public class Rest {
             return result;
         }
 
-        return null;
+        throw new NotFoundException();
     }
 }

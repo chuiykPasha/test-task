@@ -14,25 +14,26 @@ import java.util.Base64;
 
 @Service
 public class AuthService {
+
     @Value("${auth.login}")
     private String authLogin;
+
     @Value("${auth.password}")
     private String authPassword;
+
     private final int LOGIN = 0;
     private final int PASSWORD = 1;
+
     @Value("${auth.host}")
     private String authHost;
 
-    public void auth(String header){
-        System.out.println("CALL AUTH " + Rest.getCredentials(header));
-        String[] credentials = Rest.getCredentials(header);
+    public void auth(String login, String password){
         RestTemplate restTemplate = new RestTemplate();
-        final String authPath
-                = "http://" + authHost + "/auth";
+        final String authPath = "http://" + authHost + "/auth";
 
         MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-        map.add("login", credentials[LOGIN]);
-        map.add("password", credentials[PASSWORD]);
+        map.add("login", login);
+        map.add("password", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, Rest.fillHeaders(authLogin, authPassword));
 
