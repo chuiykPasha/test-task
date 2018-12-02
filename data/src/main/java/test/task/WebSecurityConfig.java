@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .authenticationEntryPoint(getBasicAuthEntryPoint());
-
+        http.antMatcher("/h2_console/**").csrf().disable();
     }
 
     @Bean
