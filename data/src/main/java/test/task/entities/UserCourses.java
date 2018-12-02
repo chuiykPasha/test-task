@@ -6,6 +6,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+
 @Entity
 public class UserCourses implements Serializable{
     @Id
@@ -25,5 +28,17 @@ public class UserCourses implements Serializable{
         this.user = user;
         this.course = course;
         this.grade = grade;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public String getGrade() {
+        return grade;
     }
 }
