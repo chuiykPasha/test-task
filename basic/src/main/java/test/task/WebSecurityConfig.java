@@ -6,6 +6,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -18,18 +20,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(getBasicAuthEntryPoint());*/
 
         http
-            //.csrf().disable()
+            .csrf().disable()
             .authorizeRequests()
                 .anyRequest().authenticated()
             .and()
             .authenticationProvider(provider())
-            .httpBasic().realmName("MY-APP");
+            .httpBasic().realmName("MY-APP")
+            /*.and()
+            .csrf()
+            .csrfTokenRepository(csrfTokenRepository())*/
+        ;
 
     }
 
     @Bean
     public AuthenticationProvider provider(){
         return new ExternalServiceAuthProvider();
+    }
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        return CookieCsrfTokenRepository.withHttpOnlyFalse();
     }
 
 
