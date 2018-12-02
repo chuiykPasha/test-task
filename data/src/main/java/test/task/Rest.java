@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -26,7 +27,7 @@ public class Rest {
             System.out.println("HAVE BUCKET");
             RBucket<Map<String, String>> bucket = redissonClient.getBucket(userId);
 
-            Map<String, Object> result = new HashMap<>();
+            Map<String, Object> result = new LinkedHashMap<>();
             result.put("user", userId);
             result.put("total", bucket.get().size());
             result.put("courses", bucket.get());
