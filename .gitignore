@@ -1,4 +1,7 @@
 /target/
+/auth/target/
+/basic/target/
+/data/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
