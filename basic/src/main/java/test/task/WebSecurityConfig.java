@@ -1,5 +1,6 @@
 package test.task;
 
+import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -7,7 +8,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -19,19 +25,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().httpBasic()
                 .authenticationEntryPoint(getBasicAuthEntryPoint());*/
 
-        http
-            .csrf().disable()
-            .authorizeRequests()
-                .anyRequest().authenticated()
-            .and()
-            .authenticationProvider(provider())
-            .httpBasic().realmName("MY-APP")
+
+        RequestMatcher csrfRequestMatcher = new RequestMatcher() {
+
+            // Enabled CSFR protection on the following urls:
+            private AntPathRequestMatcher[] requestMatchers = {
+                    new AntPathRequestMatcher("/**/logout"),
+                    new AntPathRequestMatcher("/**/user/***")
+            };
+
+            @Override
+            public boolean matches(HttpServletRequest request) {
+                // If the request match one url the CSFR protection will be enabled
+                for (AntPathRequestMatcher rm : requestMatchers) {
+                    if (rm.matches(request)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };// method matches
+
+                http.csrf().requireCsrfProtectionMatcher(csrfRequestMatcher).and().httpBasic().and().authorizeRequests().antMatchers("/login").authenticated();
+                //http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
+                //http.csrf().csrfTokenRepository(csrfTokenRepository());
+
+        //http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
+        //http
+           // .authorizeRequests()
+             //   .anyRequest().authenticated()
             /*.and()
             .csrf()
             .csrfTokenRepository(csrfTokenRepository())*/
         ;
 
     }
+
 
     @Bean
     public AuthenticationProvider provider(){
@@ -42,7 +71,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CsrfTokenRepository csrfTokenRepository() {
         return CookieCsrfTokenRepository.withHttpOnlyFalse();
     }
-
-
-
 }
