@@ -74,9 +74,8 @@ public class Rest {
     }
 
     public static HttpHeaders fillHeaders(String login, String password){
-        String cred = login + ":" + password;
-        System.out.println("CREED " + cred);
-        String base64Credentials = new String(org.apache.commons.codec.binary.Base64.encodeBase64(cred.getBytes()));
+        String httpBasicCredentials = login + ":" + password;
+        String base64Credentials = new String(org.apache.commons.codec.binary.Base64.encodeBase64(httpBasicCredentials.getBytes()));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + base64Credentials);

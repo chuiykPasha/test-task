@@ -17,9 +17,7 @@ public class Rest {
 
     @RequestMapping(value = "/data/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public Map<String, Object> logout(@PathVariable("userId") String userId){
-        System.out.println("DATA REST " + userId);
-
+    public Map<String, Object> getUserCourses(@PathVariable("userId") String userId){
         User user = userRepository.findByName(userId);
 
         if(user != null){
