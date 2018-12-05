@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import test.task.exception.InternalServerErrException;
+import test.task.exception.NotFoundException;
+import test.task.exception.ServiceUnavailableException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,9 +32,7 @@ public class Rest {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(HttpSession httpSession, HttpServletResponse httpServletResponse){
-        System.out.println("CSRF TOKEN SESSION " + ((DefaultCsrfToken)httpSession.getAttribute("org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN")).getToken());
         httpServletResponse.addHeader("X-CSRF-TOKEN", ((DefaultCsrfToken)httpSession.getAttribute("org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN")).getToken());
-        System.out.println("LOGIN");
 
         return "Done";
     }
@@ -42,20 +43,18 @@ public class Rest {
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        System.out.println("LOGIN");
+
         return "Done";
     }
 
     @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public String grades(@PathVariable("userId") String userId){
-        System.out.println("GRADES");
-        System.out.println("USER ID " + userId);
-
         RestTemplate restTemplate = new RestTemplate();
         final String dataPath
                 = "http://" + dataHost + "/data/" + userId;
         ResponseEntity<String> response = null;
+
         try {
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(null, Rest.fillHeaders(dataLogin, dataPassword));
             response = restTemplate.postForEntity( dataPath, request , String.class );

@@ -1,4 +1,4 @@
-package test.task;
+package test.task.exception;
 
 
 import org.springframework.http.HttpStatus;

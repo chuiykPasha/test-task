@@ -1,4 +1,4 @@
-package test.task;
+package test.task.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import test.task.service.AuthService;
 
 public class ExternalServiceAuthProvider implements AuthenticationProvider {
 

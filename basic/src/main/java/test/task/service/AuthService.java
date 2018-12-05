@@ -1,4 +1,4 @@
-package test.task;
+package test.task.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import test.task.Rest;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +29,7 @@ public class AuthService {
         RestTemplate restTemplate = new RestTemplate();
         final String authPath = "http://" + authHost + "/auth";
 
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("login", login);
         map.add("password", password);
 
