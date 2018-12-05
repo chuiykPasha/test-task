@@ -27,8 +27,6 @@ public class Rest {
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void auth(@RequestParam("login") String login, @RequestParam("password") String password){
-        System.out.println("AUTH rest");
-        System.out.println("LOGIN " + login + " Password " + password);
         if(!credentialsExists(login, password)){
             throw new UnauthorizedException();
         }

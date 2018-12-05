@@ -1,4 +1,4 @@
-package test.task;
+package test.task.config;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
