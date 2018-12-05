@@ -29,8 +29,10 @@ public class Rest {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(HttpSession httpSession, HttpServletResponse httpServletResponse){
-        httpServletResponse.addHeader("X-CSRF-TOKEN", ((DefaultCsrfToken)httpSession.getAttribute("X-CSRF-TOKEN")).getToken());
+        System.out.println("CSRF TOKEN SESSION " + ((DefaultCsrfToken)httpSession.getAttribute("org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN")).getToken());
+        httpServletResponse.addHeader("X-CSRF-TOKEN", ((DefaultCsrfToken)httpSession.getAttribute("org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.CSRF_TOKEN")).getToken());
         System.out.println("LOGIN");
+
         return "Done";
     }
 
@@ -67,6 +69,8 @@ public class Rest {
             throw new ServiceUnavailableException();
         }catch (HttpClientErrorException.Forbidden e){
             throw new InternalServerErrException();
+        } catch (HttpClientErrorException.NotFound e){
+            throw new NotFoundException();
         }
     }
 
