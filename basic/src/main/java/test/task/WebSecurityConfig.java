@@ -1,18 +1,14 @@
 package test.task;
 
-import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -20,12 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.csrf().disable().authorizeRequests()
-                .anyRequest().authenticated()
-                .and().httpBasic()
-                .authenticationEntryPoint(getBasicAuthEntryPoint());*/
-
-
         RequestMatcher csrfRequestMatcher = new RequestMatcher() {
 
             // Enabled CSFR protection on the following urls:
@@ -46,29 +36,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };// method matches
 
-                http.csrf().requireCsrfProtectionMatcher(csrfRequestMatcher).and().httpBasic().and().authorizeRequests().antMatchers("/login").authenticated();
-                //http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
-                //http.csrf().csrfTokenRepository(csrfTokenRepository());
-
-        //http.addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class);
-        //http
-           // .authorizeRequests()
-             //   .anyRequest().authenticated()
-            /*.and()
-            .csrf()
-            .csrfTokenRepository(csrfTokenRepository())*/
-        ;
-
+        HttpSessionCsrfTokenRepository csrfTokenRepository = new HttpSessionCsrfTokenRepository();
+                csrfTokenRepository.setSessionAttributeName("X-CSRF-TOKEN");
+                http.csrf().requireCsrfProtectionMatcher(csrfRequestMatcher).and().httpBasic().and().authorizeRequests().antMatchers("/login").authenticated()
+                .and().authenticationProvider(provider());
+                http.csrf().csrfTokenRepository(csrfTokenRepository);
     }
 
 
     @Bean
     public AuthenticationProvider provider(){
         return new ExternalServiceAuthProvider();
-    }
-
-    @Bean
-    public CsrfTokenRepository csrfTokenRepository() {
-        return CookieCsrfTokenRepository.withHttpOnlyFalse();
     }
 }

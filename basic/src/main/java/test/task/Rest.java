@@ -5,6 +5,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
 @RestController
@@ -26,7 +28,8 @@ public class Rest {
     private String dataHost;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(){
+    public String login(HttpSession httpSession, HttpServletResponse httpServletResponse){
+        httpServletResponse.addHeader("X-CSRF-TOKEN", ((DefaultCsrfToken)httpSession.getAttribute("X-CSRF-TOKEN")).getToken());
         System.out.println("LOGIN");
         return "Done";
     }
