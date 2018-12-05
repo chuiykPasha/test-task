@@ -21,9 +21,6 @@ public class AuthService {
     @Value("${auth.password}")
     private String authPassword;
 
-    private final int LOGIN = 0;
-    private final int PASSWORD = 1;
-
     @Value("${auth.host}")
     private String authHost;
 
@@ -36,7 +33,6 @@ public class AuthService {
         map.add("password", password);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, Rest.fillHeaders(authLogin, authPassword));
-
         ResponseEntity<String> response = restTemplate.postForEntity( authPath, request , String.class );
     }
 }
